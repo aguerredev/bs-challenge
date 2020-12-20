@@ -7,11 +7,13 @@ import com.bestseller.starbux.exceptions.DrinkNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 @SpringBootTest
+@Transactional
 public class DrinkControllerIntegrationTests {
     @Autowired
     private DrinkController drinkController;

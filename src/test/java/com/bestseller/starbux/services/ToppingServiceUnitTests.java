@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,6 +38,12 @@ public class ToppingServiceUnitTests {
     public ToppingServiceUnitTests() {
         this.toppingRepository = mock(ToppingRepository.class);
         this.toppingService = new DefaultToppingService(toppingRepository);
+    }
+
+    @Test
+    public void getByNameTest_Ok_NoTopping() throws ToppingNotFoundException {
+        Optional<List<ToppingDTO>> testToppings = toppingService.getByName(Optional.empty());
+        assertFalse(testToppings.isPresent());
     }
 
     @Test

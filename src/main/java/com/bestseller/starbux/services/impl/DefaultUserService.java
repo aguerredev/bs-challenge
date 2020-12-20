@@ -51,9 +51,9 @@ public class DefaultUserService implements UserService {
         LOG.info("Getting Users from DB");
         Iterable<User> listOfUser = userRepository.findAll();
         List<UserDTO> listOfUserDTO = new ArrayList<>();
-        listOfUser.forEach(user -> {
-            listOfUserDTO.add(userToUserDTO(user));
-        });
+        listOfUser.forEach(user ->
+            listOfUserDTO.add(userToUserDTO(user))
+        );
 
         if(listOfUserDTO.isEmpty()) {
             throw new NoUsersFoundException();

@@ -3,6 +3,7 @@ package com.bestseller.starbux.services;
 import com.bestseller.starbux.domain.dto.CartDTO;
 import com.bestseller.starbux.domain.dto.DrinkDTO;
 import com.bestseller.starbux.domain.dto.OrderDTO;
+import com.bestseller.starbux.domain.dto.OrdersPerCustomerDTO;
 import com.bestseller.starbux.domain.dto.ToppingDTO;
 import com.bestseller.starbux.domain.dto.UserDTO;
 import com.bestseller.starbux.exceptions.CartNotFoundException;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -111,11 +113,80 @@ public class OrderServiceUnitTests {
     }
 
     @Test
+    public void placeOrderTest_Ok_ItemQuantityDiscounts() throws CartNotFoundException {
+        when(user.getId()).thenReturn(2);
+        when(user.getName()).thenReturn("Sara");
+
+        when(drink.getName()).thenReturn("Latte");
+        when(drink.getPrice()).thenReturn(5);
+
+        when(topping.getName()).thenReturn("Chocolate sauce");
+        when(topping.getPrice()).thenReturn(5);
+
+        List<ToppingDTO> toppingDTOList = new ArrayList<>();
+        toppingDTOList.add(topping);
+
+        orderService.add(user, drink, Optional.empty());
+
+        orderService.add(user, drink, Optional.empty());
+
+        orderService.add(user, drink, Optional.of(toppingDTOList));
+
+        OrderDTO orderDTO = orderService.placeOrder(user);
+
+        assertNotEquals(orderDTO.getDiscountedAmount(), orderDTO.getOriginalAmount());
+        assertEquals(orderDTO.getDiscountedAmount(), 15);
+        assertEquals(orderDTO.getOriginalAmount(), 20);
+        assertEquals(orderDTO.getCart().getUserName(), "Sara");
+        assertEquals(orderDTO.getCart().getUserId(), 2);
+        assertFalse(orderDTO.getCart().getBeverageList().isEmpty());
+    }
+
+    @Test
+    public void placeOrderTest_Ok_25PercentDiscounts() throws CartNotFoundException {
+        when(user.getId()).thenReturn(2);
+        when(user.getName()).thenReturn("Sara");
+
+        when(drink.getName()).thenReturn("Latte");
+        when(drink.getPrice()).thenReturn(5);
+
+        when(topping.getName()).thenReturn("Chocolate sauce");
+        when(topping.getPrice()).thenReturn(5);
+
+        List<ToppingDTO> toppingDTOList = new ArrayList<>();
+        toppingDTOList.add(topping);
+
+        orderService.add(user, drink, Optional.of(toppingDTOList));
+
+        orderService.add(user, drink, Optional.of(toppingDTOList));
+
+        OrderDTO orderDTO = orderService.placeOrder(user);
+
+        assertNotEquals(orderDTO.getDiscountedAmount(), orderDTO.getOriginalAmount());
+        assertEquals(orderDTO.getDiscountedAmount(), 15);
+        assertEquals(orderDTO.getOriginalAmount(), 20);
+        assertEquals(orderDTO.getCart().getUserName(), "Sara");
+        assertEquals(orderDTO.getCart().getUserId(), 2);
+        assertFalse(orderDTO.getCart().getBeverageList().isEmpty());
+    }
+
+    @Test
     public void placeOrderTest_CartNotFound(){
         assertThrows(CartNotFoundException.class,
                 () -> orderService.placeOrder(user));
     }
 
 
+    @Test
+    public void getOrdersPerCustomerList_Ok() {
+        when(user.getId()).thenReturn(-1);
+        when(user.getName()).thenReturn("Ghost");
 
+        List<UserDTO> userDTOList = new ArrayList<>();
+        userDTOList.add(user);
+
+        List<OrdersPerCustomerDTO> ordersPerCustomerDTOList = orderService.getOrdersPerCustomerList(userDTOList);
+
+        assertFalse(ordersPerCustomerDTOList.isEmpty());
+    }
 }

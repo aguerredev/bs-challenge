@@ -44,14 +44,23 @@ public class OrderDetailServiceUnitTests {
 
         //Preparing OrderDetails
         OrderDetail orderDetail = mock(OrderDetail.class);
-        List<OrderDetail> orderDetailList = new ArrayList<>();
-        orderDetailList.add(orderDetail);
+        OrderDetail orderDetail2 = mock(OrderDetail.class);
 
         when(orderDetail.getDrink()).thenReturn("Tea");
         when(orderDetail.getTopping()).thenReturn("Milk");
         when(orderDetail.getId()).thenReturn(1);
         when(orderDetail.getElement()).thenReturn(1);
         when(orderDetail.getUserId()).thenReturn(1);
+
+        when(orderDetail2.getDrink()).thenReturn("Tea");
+        when(orderDetail2.getTopping()).thenReturn("Milk");
+        when(orderDetail2.getId()).thenReturn(1);
+        when(orderDetail2.getElement()).thenReturn(2);
+        when(orderDetail2.getUserId()).thenReturn(1);
+
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        orderDetailList.add(orderDetail);
+        orderDetailList.add(orderDetail2);
 
         when(orderDetailRepository.findByDrink("Tea")).thenReturn(orderDetailList);
 

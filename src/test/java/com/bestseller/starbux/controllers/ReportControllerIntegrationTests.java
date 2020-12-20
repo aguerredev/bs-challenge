@@ -8,6 +8,7 @@ import com.bestseller.starbux.exceptions.NoUsersFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @SpringBootTest
+@Transactional
 public class ReportControllerIntegrationTests {
     @Autowired
     private ReportController reportController;

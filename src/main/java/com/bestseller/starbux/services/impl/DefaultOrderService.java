@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -163,7 +162,7 @@ public class DefaultOrderService implements OrderService {
         beverageList.forEach(beverage -> {
             int costOfBeverage = calculateCostOfBeverage(beverage);
             if(costOfBeverage < discount.get()) {
-                discount.getAndAdd(costOfBeverage);
+                discount.set(costOfBeverage);
             }
         });
 
@@ -174,9 +173,9 @@ public class DefaultOrderService implements OrderService {
         AtomicInteger cost = new AtomicInteger(beverage.getDrink().getPrice());
 
         if(beverage.getTopping().isPresent()) {
-            beverage.getTopping().get().forEach(topping -> {
-                cost.getAndAdd(topping.getPrice());
-            });
+            beverage.getTopping().get().forEach(topping ->
+                cost.getAndAdd(topping.getPrice())
+            );
         }
 
         return cost.get();

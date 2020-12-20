@@ -24,10 +24,13 @@ Some options would be:
 
 ### Coverage
 
+Test Coverage can be seen here: https://imgur.com/a/odYV8Zz
 
+I only added tests where we have some logic, so, I didn't add tests for entities, etc. That would make no sense to me.
+Basically, only for Services and Controllers. That's where I focused on getting good tests and ensuring that I got at least 70% coverage as requested.
 
 ## Dependencies added
-* _H2_: Provides us with a small embebbed DB.
+* _H2_: Provides us with a small embedded DB.
 
 * _MapStruct_: This allow us to map objects in a quick, clean and easy way.
 
@@ -41,14 +44,16 @@ Some options would be:
 4. Run this command: _docker run -p 8081:8081 docker.io/library/starbux:1.0_
     With this you will be able to perform API calls using Postman or your preferred software.
 
-### Accessing embebed DB
+### Accessing embedded DB
 
 http://localhost:8081/h2-console
 User: sa - No Password
+JDBC Url: jdbc:h2:mem:starbux
 
 ### Accessing API documentation
 
-http://localhost:8081/swagger-ui
+http://localhost:8081/swagger-ui/
+The last / counts!
 
 ## Candidate Info
 
