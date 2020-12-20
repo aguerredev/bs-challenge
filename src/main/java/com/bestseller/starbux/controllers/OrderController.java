@@ -14,6 +14,11 @@ import com.bestseller.starbux.services.DrinkService;
 import com.bestseller.starbux.services.OrderService;
 import com.bestseller.starbux.services.ToppingService;
 import com.bestseller.starbux.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +49,18 @@ public class OrderController {
         this.toppingService = toppingService;
     }
 
+
+    @Operation(summary = "Add a beverage to a user's cart")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The Beverage was successfully added to the Cart",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CartDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "The User does not exist.",
+                    content = { @Content}),
+            @ApiResponse(responseCode = "404", description = "The Drink does not exist.",
+                    content = { @Content}),
+            @ApiResponse(responseCode = "404", description = "The Topping does not exist.",
+                    content = @Content)})
     @PostMapping("/carts")
     public CartDTO add(@PathVariable int userId, @RequestBody BeverageDTO beverageDTO) throws UserNotFoundException,
             DrinkNotFoundException, ToppingNotFoundException {
@@ -55,6 +72,15 @@ public class OrderController {
         return orderService.add(user, drink, toppings);
     }
 
+    @Operation(summary = "Place an order for a user's Cart")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The Order was successfully placed",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CartDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "The User does not exist.",
+                    content = { @Content}),
+            @ApiResponse(responseCode = "404", description = "The Cart does not exist.",
+                    content = @Content)})
     @PostMapping()
     public OrderDTO place(@PathVariable int userId) throws UserNotFoundException, CartNotFoundException {
         UserDTO user = getUser(userId);

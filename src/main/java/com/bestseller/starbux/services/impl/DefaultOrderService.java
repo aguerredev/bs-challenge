@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -162,7 +163,7 @@ public class DefaultOrderService implements OrderService {
         beverageList.forEach(beverage -> {
             int costOfBeverage = calculateCostOfBeverage(beverage);
             if(costOfBeverage < discount.get()) {
-                discount.set(costOfBeverage);
+                discount.getAndAdd(costOfBeverage);
             }
         });
 
@@ -208,11 +209,10 @@ public class DefaultOrderService implements OrderService {
     }
 
     private void updateCartAmount(CartDTO cartDTO,Beverage beverage) {
-        int currentCartAmount = cartDTO.getCartAmount();
-        cartDTO.setCartAmount(currentCartAmount + beverage.getDrink().getPrice());
+        cartDTO.setCartAmount(cartDTO.getCartAmount() + beverage.getDrink().getPrice());
         if(beverage.getTopping().isPresent()) {
             beverage.getTopping().get().forEach(topping ->
-                    cartDTO.setCartAmount(currentCartAmount + topping.getPrice())
+                    cartDTO.setCartAmount(cartDTO.getCartAmount() + topping.getPrice())
             );
         }
     }
@@ -226,14 +226,14 @@ public class DefaultOrderService implements OrderService {
     private void calculateOrderCost(UserDTO user, CartDTO cart, AtomicInteger amountToPay, AtomicInteger element) {
         cart.getBeverageList().forEach(beverage -> {
             //For each beverage I only have 1 Drink, so we add it's price to the amount to pay.
-            amountToPay.addAndGet(beverage.getDrink().getPrice());
+            amountToPay.getAndAdd(beverage.getDrink().getPrice());
             //Check if the Drink has Toppings
             if(beverage.getTopping().isPresent()) {
                 /*The Drink has toppings, so we need to add the cost of each topping to the amount to pay.
                 Also, we need to add the combination of Drink + Topping in the Order Detail table.
                  */
                 beverage.getTopping().get().forEach(topping -> {
-                    amountToPay.addAndGet(topping.getPrice());
+                    amountToPay.getAndAdd(topping.getPrice());
                     orderDetailService.saveOrderDetail(nextOrderId.get(), element.getAndIncrement(),
                             beverage.getDrink().getName(), topping.getName(), user.getId());
                 });

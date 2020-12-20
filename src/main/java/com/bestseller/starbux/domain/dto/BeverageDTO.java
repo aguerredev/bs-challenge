@@ -9,9 +9,7 @@ public class BeverageDTO {
 
     public BeverageDTO(String drink, Optional<List<String>> toppings) {
         this.drink = drink;
-        if(toppings.isPresent()) {
-            this.toppings = toppings;
-        }
+        this.toppings = toppings;
     }
 
     public String getDrink() {

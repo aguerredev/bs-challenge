@@ -49,7 +49,10 @@ CREATE TABLE customer_order (
 insert into user (name) values ('Patrick');
 insert into user (name) values ('Sara');
 insert into user (name) values ('Cees');
-
+insert into user (name) values ('Mary');
+insert into user (name) values ('Luke');
+insert into user (name) values ('Anna');
+insert into user (name) values ('Mark');
 
  -- Create Drinks from Assignment
 
